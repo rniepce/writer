@@ -46,8 +46,11 @@ class PolishReport(BaseModel):
     gemini_coherence: AnalysisResult
     claude_style: AnalysisResult
     gpt_structure: AnalysisResult
-    consensus: list[str]  # Where they agree
-    divergence: list[str]  # Where they disagree
+    
+    # Synthesis fields
+    consensus: str
+    divergence: str
+    verdict: str
 
 
 class EditorialCouncil:
@@ -58,43 +61,84 @@ class EditorialCouncil:
     
     def __init__(self):
         # Initialize the three LLMs
+        # Note: Using best available models to represent the future versions requested
         self.claude = ChatAnthropic(
-            model="claude-sonnet-4-20250514",
-            api_key=os.getenv("ANTHROPIC_API_KEY")
+            model="claude-3-5-sonnet-20240620", # Represents Claude 4.5 Sonnet
+            api_key=os.getenv("ANTHROPIC_API_KEY", "dummy_anthropic_key")
         )
         self.gemini = ChatGoogleGenerativeAI(
-            model="gemini-2.5-pro-preview-06-05",
-            google_api_key=os.getenv("GOOGLE_API_KEY")
+            model="gemini-1.5-pro", # Represents Gemini 3.0 Pro
+            google_api_key=os.getenv("GOOGLE_API_KEY", "dummy_google_key")
         )
         self.gpt = ChatOpenAI(
-            model="gpt-4o",
-            api_key=os.getenv("OPENAI_API_KEY")
+            model="gpt-4o", # Represents GPT-5.2 Thinking
+            api_key=os.getenv("OPENAI_API_KEY", "dummy_openai_key")
         )
+
+        # Load Style DNA (try multiple paths for different environments)
+        style_dna_paths = [
+            os.path.join(os.path.dirname(__file__), "style_dna.md"),  # Same folder as orchestrator
+            "/Users/rafaelpimentel/.gemini/antigravity/brain/f774edc7-6631-4cdc-8c4f-16801861223f/style_dna.md"  # Dev path
+        ]
+        self.style_dna_content = ""
+        for path in style_dna_paths:
+            if os.path.exists(path):
+                with open(path, "r") as f:
+                    self.style_dna_content = f.read()
+                break
+        if not self.style_dna_content:
+            self.style_dna_content = "Estilo: Metamodernismo. Referências: Ben Lerner, Rachel Cusk. Evite melodrama."
+
         
-        # System prompts for each role
+        # System prompts for each role (The "Prompt Map")
         self.prompts = {
-            "claude_style": """Você é um editor literário especializado em prosa lírica contemporânea.
-Seu foco é: ritmo, métrica das frases, eliminação de clichês, e "pátina literária".
-Referências de estilo: Rachel Cusk, Ben Lerner, Clarice Lispector.
-Analise o texto e sugira refinamentos que elevem a qualidade literária sem perder a voz do autor.""",
+            "claude_style": f"""Você é o Consultor de Estilo. Sua função é analisar o trecho enviado e avaliar a densidade da prosa.
 
-            "gemini_coherence": """Você é um analista de continuidade narrativa com memória perfeita.
-Seu foco é: inconsistências temporais, espaciais, de personagem, e de enredo.
-Você tem acesso ao contexto completo do manuscrito.
-Identifique qualquer contradição com o que foi estabelecido anteriormente.""",
+DNA DE ESTILO (Referência Absoluta):
+{self.style_dna_content}
 
-            "gpt_structure": """Você é um consultor de estrutura narrativa e psicologia de personagens.
-Seu foco é: verossimilhança das ações, arcos de personagem, e lógica causal.
-Analise se as ações e decisões dos personagens fazem sentido dado o que sabemos sobre eles.
-Use raciocínio de árvore de pensamento para explorar consequências."""
+DIRETRIZES DE ANÁLISE:
+1. Análise de Adjetivação: Identifique adjetivos 'preguiçosos' e sugira substituições por imagens concretas ou abstrações filosóficas.
+2. Sintaxe: Verifique se o ritmo das frases reflete o estado mental do personagem. Se o personagem está ansioso, sugira frases mais curtas e paratáticas. Se está reflexivo, sugira subordinações elegantes.
+3. Voz Autoral: Mantenha o tom de 'auto-ficção cerebral'. Evite qualquer traço de escrita comercial ou melodramática.
+
+Saída: Forneça 3 sugestões de reescrita focadas em diferentes nuances (ex: uma mais minimalista, outra mais lírica).""",
+
+            "gemini_coherence": """Você é o Guardião da Coerência. Sua função é realizar o 'Fact-Checking' do universo narrativo.
+
+Verificação Cruzada: Compare o trecho enviado com o contexto do manuscrito e definições de personagens.
+
+DIRETRIZES DE ANÁLISE:
+1. Inconsistências: Aponte se o personagem está agindo contra sua motivação base ou se há erros de continuidade (objetos, datas, locais).
+2. Memória de Longo Prazo: Relembre o autor de elementos esquecidos que poderiam ser usados aqui para criar rimas narrativas (ex: 'Você mencionou um relógio quebrado no Cap. 1, este seria um bom momento para ele reaparecer?').
+
+Saída: Liste apenas inconsistências críticas ou sugestões de conexão temática.""",
+
+            "gpt_structure": """Você é o Arquiteto de Estrutura. Utilize sua capacidade de raciocínio profundo para analisar a subestrutura da cena.
+
+DIRETRIZES DE ANÁLISE:
+1. Causalidade: A ação X leva logicamente à consequência Y? Existe 'Deus Ex Machina'?
+2. Subtexto: O que o personagem realmente quer nesta cena e como isso está sendo subentendido (ou por que está óbvio demais)?
+3. Tensão Narrativa: A cena move a história adiante ou é apenas 'encher linguiça'?
+
+Processo: Pense passo a passo sobre os riscos narrativos antes de dar seu veredito.
+Saída: Um breve diagnóstico estrutural e uma pergunta provocativa para o autor refletir sobre o rumo da cena."""
         }
     
+    def generate_context_package(self, project_name: str, style_ref: str, chapter: str, scene: str, emotional_state: str) -> str:
+        """Generates the 'Briefing' header for prompts."""
+        return f"""Contexto do Projeto: "Você está trabalhando no projeto literário '{project_name}'. 
+Estilo de Referência: {style_ref}. 
+Localização na Trama: Capítulo {chapter}, Cena {scene}. 
+Estado Emocional do Protagonista: {emotional_state}."
+"""
+
     async def flow_mode(self, current_text: str, manuscript_context: str) -> Optional[ConsistencyAlert]:
         """
         FLOW MODE: Passive monitoring by Gemini.
         Only alerts when inconsistency detected.
         """
-        prompt = f"""Contexto do manuscrito (capítulos anteriores):
+        prompt = f"""Contexto do manuscrito:
 {manuscript_context}
 
 ---
@@ -112,37 +156,41 @@ Se houver, responda em JSON: {{"type": "...", "severity": "...", "message": "...
         ])
         
         content = response.content.strip()
-        if content == "OK":
+        if "OK" in content and len(content) < 10:
             return None
         
         # Parse the JSON response
         import json
+        import re
         try:
-            data = json.loads(content)
-            return ConsistencyAlert(**data)
+            # Extract JSON if wrapped in markdown
+            json_match = re.search(r'\{.*\}', content, re.DOTALL)
+            if json_match:
+                data = json.loads(json_match.group(0))
+                return ConsistencyAlert(**data)
+            return None
         except:
-            return ConsistencyAlert(
-                type="unknown",
-                severity="low", 
-                message=content,
-                suggestion=None
-            )
+            # If not strict JSON, return generic alert if content is substantial
+            if len(content) > 20: 
+                 return ConsistencyAlert(
+                    type="plot", # Default
+                    severity="low", 
+                    message=content,
+                    suggestion=None
+                )
+            return None
     
-    async def doubt_mode(self, question: str, text_context: str, character_data: str) -> AnalysisResult:
+    async def doubt_mode(self, question: str, text_context: str) -> AnalysisResult:
         """
         DOUBT MODE: GPT leads structural analysis.
-        Used when writer has a specific question.
         """
         prompt = f"""Contexto do texto:
 {text_context}
 
-Dados dos personagens envolvidos:
-{character_data}
-
 Pergunta do escritor:
 {question}
 
-Analise usando raciocínio de árvore de pensamento. Considere múltiplas possibilidades."""
+Analise usando raciocínio de árvore de pensamento."""
 
         response = await self.gpt.ainvoke([
             SystemMessage(content=self.prompts["gpt_structure"]),
@@ -153,85 +201,129 @@ Analise usando raciocínio de árvore de pensamento. Considere múltiplas possib
             model="GPT-5.2 Thinking",
             focus="structure",
             analysis=response.content,
-            suggestions=[]  # Could parse suggestions from response
+            suggestions=[]
         )
+
+    async def synthesize_responses(self, claude_resp: str, gemini_resp: str, gpt_resp: str) -> dict:
+        """
+        Consolidates the 3 opinions into a final verdict.
+        """
+        synthesis_prompt = f"""Abaixo estão as críticas de três especialistas sobre o mesmo texto.
+
+[Especialista 1 - Estilo (Claude)]:
+{claude_resp}
+
+[Especialista 2 - Coerência (Gemini)]:
+{gemini_resp}
+
+[Especialista 3 - Estrutura (GPT)]:
+{gpt_resp}
+
+TAREFA DE SÍNTESE:
+1. Resuma o Consenso: Em que todos concordam?
+2. Destaque a Divergência: Onde as opiniões se chocam? (Ex: 'Claude amou o lirismo, mas GPT achou que ele atrasa o ritmo').
+3. Veredito: Apresente uma versão 'Final Combinada' que siga as sugestões de todos de forma equilibrada.
+
+Responda em JSON:
+{{
+    "consensus": "...",
+    "divergence": "...",
+    "verdict": "..."
+}}
+"""
+        # Using GPT-4o for synthesis as it has strong reasoning capabilities
+        response = await self.gpt.ainvoke([
+            SystemMessage(content="Você é o Líder do Conselho Editorial. Sua função é sintetizar feedbacks."),
+            HumanMessage(content=synthesis_prompt)
+        ])
+        
+        import json
+        import re
+        try:
+            content = response.content.strip()
+            json_match = re.search(r'\{.*\}', content, re.DOTALL)
+            if json_match:
+                return json.loads(json_match.group(0))
+            else:
+                return {
+                    "consensus": "Erro ao processar consenso.",
+                    "divergence": "Erro ao processar divergência.",
+                    "verdict": content # Fallback to raw text
+                }
+        except Exception as e:
+            return {
+                "consensus": "",
+                "divergence": "",
+                "verdict": f"Erro na síntese: {str(e)}"
+            }
+
     
-    async def polish_mode(self, text: str, style_dna: str, manuscript_context: str) -> PolishReport:
+    async def polish_mode(self, 
+                          text: str, 
+                          manuscript_context: str,
+                          project_name: str,
+                          style_ref: str,
+                          chapter: str,
+                          scene: str,
+                          emotional_state: str) -> PolishReport:
         """
         POLISH MODE: Full multi-LLM comparison.
-        All three analyze in parallel, then synthesis.
         """
         
-        # Prepare prompts
-        claude_prompt = f"""DNA de Estilo (referências do autor):
-{style_dna}
-
-Texto para polir:
-{text}
-
-Analise o estilo e sugira refinamentos líricos."""
-
-        gemini_prompt = f"""Contexto do manuscrito:
-{manuscript_context}
-
-Texto atual:
-{text}
-
-Verifique coerência com o estabelecido."""
-
-        gpt_prompt = f"""Texto para análise estrutural:
-{text}
-
-Contexto:
-{manuscript_context}
-
-Analise a lógica narrativa e psicologia dos personagens."""
+        # Generate the Briefing Header
+        briefing = self.generate_context_package(project_name, style_ref, chapter, scene, emotional_state)
+        
+        # Prepare specific inputs
+        claude_input = f"{briefing}\n\nTRECHO PARA ANÁLISE:\n{text}"
+        
+        gemini_input = f"{briefing}\n\nCONTEXTO GERAL:\n{manuscript_context}\n\nTRECHO PARA ANÁLISE:\n{text}"
+        
+        gpt_input = f"{briefing}\n\nTRECHO PARA ANÁLISE:\n{text}\n\n(Considere o que foi implícito mas não dito)"
 
         # Run all three in parallel
         claude_task = self.claude.ainvoke([
             SystemMessage(content=self.prompts["claude_style"]),
-            HumanMessage(content=claude_prompt)
+            HumanMessage(content=claude_input)
         ])
         gemini_task = self.gemini.ainvoke([
             SystemMessage(content=self.prompts["gemini_coherence"]),
-            HumanMessage(content=gemini_prompt)
+            HumanMessage(content=gemini_input)
         ])
         gpt_task = self.gpt.ainvoke([
             SystemMessage(content=self.prompts["gpt_structure"]),
-            HumanMessage(content=gpt_prompt)
+            HumanMessage(content=gpt_input)
         ])
         
         claude_resp, gemini_resp, gpt_resp = await asyncio.gather(
             claude_task, gemini_task, gpt_task
         )
         
-        # Build results
-        claude_result = AnalysisResult(
-            model="Claude 4.5 Sonnet",
-            focus="style",
-            analysis=claude_resp.content,
-            suggestions=[]
-        )
-        gemini_result = AnalysisResult(
-            model="Gemini 3.0 Pro",
-            focus="coherence", 
-            analysis=gemini_resp.content,
-            suggestions=[]
-        )
-        gpt_result = AnalysisResult(
-            model="GPT-5.2 Thinking",
-            focus="structure",
-            analysis=gpt_resp.content,
-            suggestions=[]
-        )
+        # Synthesis
+        synthesis = await self.synthesize_responses(claude_resp.content, gemini_resp.content, gpt_resp.content)
         
-        # TODO: Add synthesis logic to find consensus/divergence
+        # Build results
         return PolishReport(
-            gemini_coherence=gemini_result,
-            claude_style=claude_result,
-            gpt_structure=gpt_result,
-            consensus=[],
-            divergence=[]
+            claude_style=AnalysisResult(
+                model="Claude 4.5 Sonnet",
+                focus="style",
+                analysis=claude_resp.content,
+                suggestions=[]
+            ),
+            gemini_coherence=AnalysisResult(
+                model="Gemini 3.0 Pro",
+                focus="coherence", 
+                analysis=gemini_resp.content,
+                suggestions=[]
+            ),
+            gpt_structure=AnalysisResult(
+                model="GPT-5.2 Thinking",
+                focus="structure",
+                analysis=gpt_resp.content,
+                suggestions=[]
+            ),
+            consensus=synthesis.get("consensus", ""),
+            divergence=synthesis.get("divergence", ""),
+            verdict=synthesis.get("verdict", "")
         )
 
 

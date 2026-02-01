@@ -19,13 +19,17 @@ class FlowRequest(BaseModel):
 class DoubtRequest(BaseModel):
     question: str
     text_context: str
-    character_data: str = ""
 
 
 class PolishRequest(BaseModel):
     text: str
-    style_dna: str = ""
-    manuscript_context: str = ""
+    manuscript_context: str
+    # Context specific fields for the Prompt Map
+    project_name: str = "Projeto Sem Nome"
+    style_ref: str = "Metamodernismo"
+    chapter: str = "1"
+    scene: str = "1"
+    emotional_state: str = "Neutro"
 
 
 @router.post("/flow", response_model=Optional[ConsistencyAlert])
@@ -53,8 +57,7 @@ async def doubt_mode(request: DoubtRequest):
     try:
         result = await council.doubt_mode(
             question=request.question,
-            text_context=request.text_context,
-            character_data=request.character_data
+            text_context=request.text_context
         )
         return result
     except Exception as e:
@@ -70,8 +73,12 @@ async def polish_mode(request: PolishRequest):
     try:
         report = await council.polish_mode(
             text=request.text,
-            style_dna=request.style_dna,
-            manuscript_context=request.manuscript_context
+            manuscript_context=request.manuscript_context,
+            project_name=request.project_name,
+            style_ref=request.style_ref,
+            chapter=request.chapter,
+            scene=request.scene,
+            emotional_state=request.emotional_state
         )
         return report
     except Exception as e:

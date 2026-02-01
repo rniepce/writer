@@ -1,0 +1,26 @@
+
+[build]
+builder = "docker"
+
+[deploy]
+startCommand = "echo 'Specify service deployment in individual configs'"
+
+# Service: Backend
+[[services]]
+name = "backend"
+path = "/backend"
+dockerfile = "Dockerfile"
+[services.deploy]
+startCommand = "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"
+[services.env]
+PORT = "8000"
+
+# Service: Frontend
+[[services]]
+name = "frontend"
+path = "/frontend"
+dockerfile = "Dockerfile"
+[services.deploy]
+startCommand = "node server.js"
+[services.env]
+PORT = "3000"
