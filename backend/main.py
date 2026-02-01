@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 
 # Metadata
 from .database import engine, Base
+from .routes_council import router as council_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -13,6 +14,9 @@ async def lifespan(app: FastAPI):
     # Shutdown
 
 app = FastAPI(title="Ghost Writer API", lifespan=lifespan)
+
+# Include routers
+app.include_router(council_router)
 
 # CORS (Allowing frontend)
 app.add_middleware(
