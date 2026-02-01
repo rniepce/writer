@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Default Theme: Old Paper */
+  --paper-bg: #F5F2E9;
+  --paper-text: #2F3136;
+  
+  --nebula-bg: #0F111A;
+  --nebula-text: #E0E1E6;
+  --nebula-accent: #8B5CF6; /* Violet */
+
+  --font-serif: 'Times New Roman', serif; /* Placeholder for custom font */
+  --font-sans: 'Inter', sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-paper-bg text-paper-text font-serif antialiased transition-colors duration-500 ease-in-out;
+  }
+}
+
+/* Theme Classes */
+body.theme-nebula {
+    @apply bg-nebula-bg text-nebula-text;
+}
+
+body.theme-print {
+    @apply bg-white text-black;
+}
+
+/* Custom Utilities */
+.glass-panel {
+    @apply backdrop-blur-md bg-white/60 border border-white/20 shadow-lg;
+}
+
+.typewriter-focus {
+    /* Logic to be handled in component, but base style here */
+}
