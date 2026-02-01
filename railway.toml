@@ -1,9 +1,5 @@
-
-[build]
-builder = "docker"
-
-[deploy]
-startCommand = "echo 'Specify service deployment in individual configs'"
+# Railway Configuration
+# Services are defined below
 
 # Service: Backend
 [[services]]
