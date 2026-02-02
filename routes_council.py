@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 
-from .orchestrator import council, ActivationMode, ConsistencyAlert, AnalysisResult, PolishReport
+from orchestrator import council, ActivationMode, ConsistencyAlert, AnalysisResult, PolishReport
 
 router = APIRouter(prefix="/council", tags=["Editorial Council"])
 
