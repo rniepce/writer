@@ -63,7 +63,7 @@ class EditorialCouncil:
         # Initialize the three LLMs
         # Note: Using best available models to represent the future versions requested
         self.claude = ChatAnthropic(
-            model="claude-3-5-sonnet-latest", # Represents latest Sonnet (targeting 4.5 if available via this alias)
+            model="claude-sonnet-4-5-20250929",  # Claude 4.5 Sonnet (Sept 2025 release)
             api_key=os.getenv("ANTHROPIC_API_KEY", "dummy_anthropic_key")
         )
         self.gemini = ChatGoogleGenerativeAI(
