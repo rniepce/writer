@@ -67,7 +67,7 @@ class EditorialCouncil:
             api_key=os.getenv("ANTHROPIC_API_KEY", "dummy_anthropic_key")
         )
         self.gemini = ChatGoogleGenerativeAI(
-            model="gemini-1.5-pro", # Represents Gemini 3.0 Pro
+            model="gemini-2.5-flash",  # Gemini 2.5 Flash (stable, June 2025)
             google_api_key=os.getenv("GOOGLE_API_KEY", "dummy_google_key")
         )
         self.gpt = ChatOpenAI(
