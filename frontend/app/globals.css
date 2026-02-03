@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   /* Default Theme: Old Paper */
@@ -10,32 +8,40 @@
   --nebula-bg: #0F111A;
   --nebula-text: #E0E1E6;
   --nebula-accent: #8B5CF6;
-  /* Violet */
 
   --font-serif: 'Times New Roman', serif;
   --font-sans: 'Inter', sans-serif;
 }
 
-@layer base {
-  body {
-    @apply bg-paper-bg text-paper-text font-serif antialiased transition-colors duration-500 ease-in-out;
-  }
+/* Base body styles using CSS variables directly */
+body {
+  background-color: var(--paper-bg);
+  color: var(--paper-text);
+  font-family: var(--font-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
 }
 
 /* Theme Classes */
 body.theme-nebula {
-  @apply bg-nebula-bg text-nebula-text;
+  background-color: var(--nebula-bg);
+  color: var(--nebula-text);
 }
 
 body.theme-print {
-  @apply bg-white text-black;
+  background-color: white;
+  color: black;
 }
 
 /* Custom Utilities */
 .glass-panel {
-  @apply backdrop-blur-md bg-white/60 border border-white/20 shadow-lg;
+  backdrop-filter: blur(12px);
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .typewriter-focus {
-  /* Logic to be handled in component, but base style here */
+  /* Logic to be handled in component */
 }

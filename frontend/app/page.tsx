@@ -36,7 +36,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-paper-bg transition-colors duration-1000">
+    <main className="min-h-screen transition-colors duration-1000">
       <ZenEditor onPolish={handlePolish} isPolishing={isPolishing} />
 
       {/* Left Ghost Panel (Future: Project navigation) */}
