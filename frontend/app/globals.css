@@ -1,40 +1,26 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
-  /* Default Theme: Old Paper */
-  --paper-bg: #F5F2E9;
-  --paper-text: #2F3136;
-  
-  --nebula-bg: #0F111A;
-  --nebula-text: #E0E1E6;
-  --nebula-accent: #8B5CF6; /* Violet */
-
-  --font-serif: 'Times New Roman', serif; /* Placeholder for custom font */
-  --font-sans: 'Inter', sans-serif;
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
-@layer base {
-  body {
-    @apply bg-paper-bg text-paper-text font-serif antialiased transition-colors duration-500 ease-in-out;
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
   }
 }
 
-/* Theme Classes */
-body.theme-nebula {
-    @apply bg-nebula-bg text-nebula-text;
-}
-
-body.theme-print {
-    @apply bg-white text-black;
-}
-
-/* Custom Utilities */
-.glass-panel {
-    @apply backdrop-blur-md bg-white/60 border border-white/20 shadow-lg;
-}
-
-.typewriter-focus {
-    /* Logic to be handled in component, but base style here */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
 }
