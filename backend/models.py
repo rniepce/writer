@@ -18,9 +18,14 @@ class Chapter(Base):
     __tablename__ = "chapters"
 
     id = Column(Integer, primary_key=True, index=True)
-    project_id = Column(Integer, ForeignKey("projects.id"))
-    title = Column(String)
-    order = Column(Integer)
+    project_id = Column(Integer, ForeignKey("projects.id"), nullable=True)
+    title = Column(String, default="Novo Capítulo")
+    content = Column(Text, default="")  # The actual prose content
+    order = Column(Integer, default=0)
+    word_count = Column(Integer, default=0)
+    color = Column(String, nullable=True)  # Optional card color
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     project = relationship("Project", back_populates="chapters")
     scenes = relationship("Scene", back_populates="chapter")
