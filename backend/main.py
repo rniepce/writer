@@ -3,8 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 # Metadata
-from .database import engine, Base
-from .routes_council import router as council_router
+from database import engine, Base
+from routes_council import router as council_router
+from routes_chapters import router as chapters_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -17,11 +18,16 @@ app = FastAPI(title="Ghost Writer API", lifespan=lifespan)
 
 # Include routers
 app.include_router(council_router)
+app.include_router(chapters_router)
 
-# CORS (Allowing frontend)
+# CORS (Allowing frontend - local dev, Tauri app, and production)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "tauri://localhost",
+        "https://tauri.localhost",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
