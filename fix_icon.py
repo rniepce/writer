@@ -1,56 +1,35 @@
-from PIL import Image, ImageDraw
-import math
+from PIL import Image
 
-def create_squircle_mask(size, corner_radius_factor=0.225):
+def replace_white_with_transparent(input_path, output_path, threshold=250):
     """
-    Create a macOS-style squircle (superellipse) mask.
-    corner_radius_factor controls the roundness (0.225 is close to macOS Big Sur style)
+    Replace white/near-white pixels with transparent.
+    threshold: pixels with R, G, B all above this value are considered white
     """
-    width, height = size
-    mask = Image.new('L', size, 0)  # Start with fully transparent
-    draw = ImageDraw.Draw(mask)
-    
-    # Draw a rounded rectangle that matches macOS icon style
-    # macOS uses approximately 22.5% corner radius
-    corner_radius = int(min(width, height) * corner_radius_factor)
-    
-    # Draw the rounded rectangle
-    draw.rounded_rectangle(
-        [(0, 0), (width - 1, height - 1)],
-        radius=corner_radius,
-        fill=255  # Fully opaque inside
-    )
-    
-    return mask
-
-def apply_transparency_to_icon(input_path, output_path):
-    """
-    Apply squircle transparency mask to an icon image.
-    """
-    # Load the image
     img = Image.open(input_path).convert("RGBA")
     print(f"Loaded image: {img.size}")
     
-    # Create the squircle mask
-    mask = create_squircle_mask(img.size)
+    # Get pixel data
+    data = img.getdata()
     
-    # Apply the mask as the alpha channel
-    # First, get the existing alpha or create one
-    r, g, b, a = img.split()
+    new_data = []
+    white_count = 0
+    for item in data:
+        r, g, b, a = item
+        # If pixel is white or near-white, make it transparent
+        if r > threshold and g > threshold and b > threshold:
+            new_data.append((r, g, b, 0))  # Fully transparent
+            white_count += 1
+        else:
+            new_data.append(item)
     
-    # Combine original alpha with our mask (minimum of both)
-    # This preserves any existing transparency while adding our shape
-    new_alpha = Image.composite(mask, Image.new('L', img.size, 0), mask)
+    print(f"Replaced {white_count} white pixels with transparent")
     
-    # Merge back with the new alpha
-    result = Image.merge('RGBA', (r, g, b, new_alpha))
-    
-    # Save the result
-    result.save(output_path)
-    print(f"Saved transparent icon to: {output_path}")
+    img.putdata(new_data)
+    img.save(output_path)
+    print(f"Saved to: {output_path}")
 
 # Run it
 input_path = "/Users/rafaelpimentel/.gemini/antigravity/brain/1b56d198-fe84-46b6-a2c3-e30b8888aa85/zenwriter_icon_v3_1770334184872.png"
-output_path = "/Users/rafaelpimentel/Downloads/writer/frontend/src-tauri/icons/icon_source_transparent.png"
+output_path = "/Users/rafaelpimentel/Downloads/writer/frontend/src-tauri/icons/icon_source_clean.png"
 
-apply_transparency_to_icon(input_path, output_path)
+replace_white_with_transparent(input_path, output_path)
