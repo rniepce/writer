@@ -80,11 +80,21 @@ export default function ChapterDrawer({
 
     return (
         <>
-            {/* Hover trigger zone */}
+            {/* Hover trigger zone - wider for easier activation */}
             <div
-                className="fixed inset-y-0 left-0 w-4 z-40"
+                className="fixed inset-y-0 left-0 w-8 z-40 cursor-pointer"
                 onMouseEnter={() => setIsOpen(true)}
-            />
+                onClick={() => setIsOpen(true)}
+            >
+                {/* Visual hint bar */}
+                <div className={`
+                    absolute left-0 top-1/2 -translate-y-1/2
+                    w-1.5 h-32 bg-gradient-to-b from-amber-400 to-purple-500
+                    rounded-r-full shadow-lg
+                    transition-all duration-300
+                    ${isOpen ? 'opacity-0' : 'opacity-70 hover:opacity-100 hover:w-2 hover:h-40'}
+                `} />
+            </div>
 
             {/* Drawer panel */}
             <div
