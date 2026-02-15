@@ -30,6 +30,9 @@ class PolishRequest(BaseModel):
     chapter: str = "1"
     scene: str = "1"
     emotional_state: str = "Neutro"
+    # Reference documents (uploaded per-project)
+    narrative_map: str = ""
+    writing_style: str = ""
 
 
 @router.post("/flow", response_model=Optional[ConsistencyAlert])
@@ -78,7 +81,9 @@ async def polish_mode(request: PolishRequest):
             style_ref=request.style_ref,
             chapter=request.chapter,
             scene=request.scene,
-            emotional_state=request.emotional_state
+            emotional_state=request.emotional_state,
+            narrative_map=request.narrative_map,
+            writing_style=request.writing_style,
         )
         return report
     except Exception as e:

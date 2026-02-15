@@ -66,10 +66,17 @@ class EditorialCouncil:
             model="claude-sonnet-4-5-20250929",  # Claude 4.5 Sonnet (Sept 2025 release)
             api_key=os.getenv("ANTHROPIC_API_KEY", "dummy_anthropic_key")
         )
-        self.gemini = ChatGoogleGenerativeAI(
-            model="gemini-2.5-flash",  # Gemini 2.5 Flash (stable, June 2025)
-            google_api_key=os.getenv("GOOGLE_API_KEY", "dummy_google_key")
-        )
+        
+        # Gemini is optional - only initialize if API key is provided
+        google_key = os.getenv("GOOGLE_API_KEY", "")
+        if google_key:
+            self.gemini = ChatGoogleGenerativeAI(
+                model="gemini-2.5-flash",  # Gemini 2.5 Flash (stable, June 2025)
+                google_api_key=google_key
+            )
+        else:
+            self.gemini = None  # Gemini not available
+            
         self.gpt = ChatOpenAI(
             model="gpt-4o", # Represents GPT-5.2 Thinking
             api_key=os.getenv("OPENAI_API_KEY", "dummy_openai_key")
@@ -138,6 +145,10 @@ Estado Emocional do Protagonista: {emotional_state}."
         FLOW MODE: Passive monitoring by Gemini.
         Only alerts when inconsistency detected.
         """
+        # Gemini is optional - if not available, skip flow mode
+        if not self.gemini:
+            return None
+            
         prompt = f"""Contexto do manuscrito:
 {manuscript_context}
 
@@ -280,26 +291,32 @@ Responda em JSON:
         
         gpt_input = f"{briefing}\n\nTRECHO PARA ANÁLISE:\n{text}\n\n(Considere o que foi implícito mas não dito)"
 
-        # Run all three in parallel
+        # Run LLMs in parallel (Gemini is optional)
         claude_task = self.claude.ainvoke([
             SystemMessage(content=self.prompts["claude_style"]),
             HumanMessage(content=claude_input)
-        ])
-        gemini_task = self.gemini.ainvoke([
-            SystemMessage(content=self.prompts["gemini_coherence"]),
-            HumanMessage(content=gemini_input)
         ])
         gpt_task = self.gpt.ainvoke([
             SystemMessage(content=self.prompts["gpt_structure"]),
             HumanMessage(content=gpt_input)
         ])
         
-        claude_resp, gemini_resp, gpt_resp = await asyncio.gather(
-            claude_task, gemini_task, gpt_task
-        )
+        # Handle optional Gemini
+        if self.gemini:
+            gemini_task = self.gemini.ainvoke([
+                SystemMessage(content=self.prompts["gemini_coherence"]),
+                HumanMessage(content=gemini_input)
+            ])
+            claude_resp, gemini_resp, gpt_resp = await asyncio.gather(
+                claude_task, gemini_task, gpt_task
+            )
+            gemini_content = gemini_resp.content
+        else:
+            claude_resp, gpt_resp = await asyncio.gather(claude_task, gpt_task)
+            gemini_content = "(Gemini não configurado - análise de coerência indisponível)"
         
         # Synthesis
-        synthesis = await self.synthesize_responses(claude_resp.content, gemini_resp.content, gpt_resp.content)
+        synthesis = await self.synthesize_responses(claude_resp.content, gemini_content, gpt_resp.content)
         
         # Build results
         return PolishReport(
@@ -310,9 +327,9 @@ Responda em JSON:
                 suggestions=[]
             ),
             gemini_coherence=AnalysisResult(
-                model="Gemini 3.0 Pro",
+                model="Gemini 3.0 Pro" if self.gemini else "Não configurado",
                 focus="coherence", 
-                analysis=gemini_resp.content,
+                analysis=gemini_content,
                 suggestions=[]
             ),
             gpt_structure=AnalysisResult(

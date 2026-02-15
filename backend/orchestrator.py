@@ -10,7 +10,9 @@ from enum import Enum
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+# Load .env: prefer DOTENV_PATH (injected by Tauri/Rust), fallback to script-relative
+_dotenv_path = os.environ.get("DOTENV_PATH") or os.path.join(os.path.dirname(__file__), ".env")
+load_dotenv(dotenv_path=_dotenv_path)
 
 # LangChain imports for multi-LLM
 from langchain_anthropic import ChatAnthropic
@@ -63,11 +65,11 @@ class EditorialCouncil:
         # Initialize the three LLMs
         # Note: Using best available models to represent the future versions requested
         self.claude = ChatAnthropic(
-            model="claude-3-5-sonnet-latest", # Represents latest Sonnet (targeting 4.5 if available via this alias)
+            model="claude-sonnet-4-5-20250929",
             api_key=os.getenv("ANTHROPIC_API_KEY", "dummy_anthropic_key")
         )
         self.gemini = ChatGoogleGenerativeAI(
-            model="gemini-1.5-pro", # Represents Gemini 3.0 Pro
+            model="gemini-3-pro-preview",
             google_api_key=os.getenv("GOOGLE_API_KEY", "dummy_google_key")
         )
         self.gpt = ChatOpenAI(
@@ -125,13 +127,18 @@ Processo: Pense passo a passo sobre os riscos narrativos antes de dar seu veredi
 Saída: Um breve diagnóstico estrutural e uma pergunta provocativa para o autor refletir sobre o rumo da cena."""
         }
     
-    def generate_context_package(self, project_name: str, style_ref: str, chapter: str, scene: str, emotional_state: str) -> str:
+    def generate_context_package(self, project_name: str, style_ref: str, chapter: str, scene: str, emotional_state: str, narrative_map: str = "", writing_style: str = "") -> str:
         """Generates the 'Briefing' header for prompts."""
-        return f"""Contexto do Projeto: "Você está trabalhando no projeto literário '{project_name}'. 
+        base = f"""Contexto do Projeto: "Você está trabalhando no projeto literário '{project_name}'. 
 Estilo de Referência: {style_ref}. 
 Localização na Trama: Capítulo {chapter}, Cena {scene}. 
 Estado Emocional do Protagonista: {emotional_state}."
 """
+        if narrative_map:
+            base += f"\n\nMAPA NARRATIVO DO AUTOR:\n{narrative_map}\n"
+        if writing_style:
+            base += f"\n\nESTILO DE ESCRITA DO AUTOR:\n{writing_style}\n"
+        return base
 
     async def flow_mode(self, current_text: str, manuscript_context: str) -> Optional[ConsistencyAlert]:
         """
@@ -265,24 +272,38 @@ Responda em JSON:
                           style_ref: str,
                           chapter: str,
                           scene: str,
-                          emotional_state: str) -> PolishReport:
+                          emotional_state: str,
+                          narrative_map: str = "",
+                          writing_style: str = "") -> PolishReport:
         """
         POLISH MODE: Full multi-LLM comparison.
         """
         
         # Generate the Briefing Header
-        briefing = self.generate_context_package(project_name, style_ref, chapter, scene, emotional_state)
+        briefing = self.generate_context_package(
+            project_name, style_ref, chapter, scene, emotional_state,
+            narrative_map=narrative_map, writing_style=writing_style
+        )
+        
+        # Build Claude system prompt — override static style_dna if user uploaded a writing style
+        claude_system = self.prompts["claude_style"]
+        if writing_style:
+            claude_system += f"\n\n--- ESTILO PERSONALIZADO DO AUTOR (Prioridade Máxima) ---\n{writing_style}\n--- FIM DO ESTILO PERSONALIZADO ---"
         
         # Prepare specific inputs
         claude_input = f"{briefing}\n\nTRECHO PARA ANÁLISE:\n{text}"
         
-        gemini_input = f"{briefing}\n\nCONTEXTO GERAL:\n{manuscript_context}\n\nTRECHO PARA ANÁLISE:\n{text}"
+        # Gemini gets narrative map as extra coherence context
+        gemini_extra = ""
+        if narrative_map:
+            gemini_extra = f"\n\nMAPA NARRATIVO (use para verificar coerência):\n{narrative_map}\n"
+        gemini_input = f"{briefing}{gemini_extra}\n\nCONTEXTO GERAL:\n{manuscript_context}\n\nTRECHO PARA ANÁLISE:\n{text}"
         
         gpt_input = f"{briefing}\n\nTRECHO PARA ANÁLISE:\n{text}\n\n(Considere o que foi implícito mas não dito)"
 
         # Run all three in parallel
         claude_task = self.claude.ainvoke([
-            SystemMessage(content=self.prompts["claude_style"]),
+            SystemMessage(content=claude_system),
             HumanMessage(content=claude_input)
         ])
         gemini_task = self.gemini.ainvoke([

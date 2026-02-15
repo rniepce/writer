@@ -27,6 +27,8 @@ export interface PolishRequest {
     chapter?: string;
     scene?: string;
     emotional_state?: string;
+    narrative_map?: string;
+    writing_style?: string;
 }
 
 export interface ConsistencyAlert {

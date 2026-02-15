@@ -40,8 +40,11 @@ export interface ChapterUpdate {
 
 // API Functions
 
-export async function listChapters(): Promise<ChapterCard[]> {
-    const response = await fetch(`${API_BASE_URL}/chapters`);
+export async function listChapters(projectId?: number): Promise<ChapterCard[]> {
+    const url = projectId
+        ? `${API_BASE_URL}/chapters?project_id=${projectId}`
+        : `${API_BASE_URL}/chapters`;
+    const response = await fetch(url);
     if (!response.ok) {
         throw new Error('Falha ao carregar capítulos');
     }

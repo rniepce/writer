@@ -65,7 +65,10 @@ def count_words(text: str) -> int:
 def get_preview(content: str, max_chars: int = 100) -> str:
     if not content:
         return ""
-    clean = content.replace('\n', ' ').strip()
+    # Remove HTML tags
+    import re
+    clean = re.sub(r'<[^>]+>', ' ', content)
+    clean = re.sub(r'\s+', ' ', clean).strip()
     if len(clean) <= max_chars:
         return clean
     return clean[:max_chars].rsplit(' ', 1)[0] + "..."
@@ -73,9 +76,12 @@ def get_preview(content: str, max_chars: int = 100) -> str:
 
 # Routes
 @router.get("", response_model=List[ChapterCard])
-def list_chapters(db: Session = Depends(get_db)):
-    """List all chapters as cards (minimal data for sidebar)"""
-    chapters = db.query(Chapter).order_by(Chapter.order).all()
+def list_chapters(project_id: Optional[int] = None, db: Session = Depends(get_db)):
+    """List chapters as cards, optionally filtered by project"""
+    query = db.query(Chapter)
+    if project_id is not None:
+        query = query.filter(Chapter.project_id == project_id)
+    chapters = query.order_by(Chapter.order).all()
     return [
         ChapterCard(
             id=ch.id,
@@ -102,8 +108,11 @@ def get_chapter(chapter_id: int, db: Session = Depends(get_db)):
 @router.post("", response_model=ChapterResponse)
 def create_chapter(chapter: ChapterCreate, db: Session = Depends(get_db)):
     """Create a new chapter"""
-    # Get max order
-    max_order = db.query(Chapter).count()
+    # Get max order for this project
+    query = db.query(Chapter)
+    if chapter.project_id is not None:
+        query = query.filter(Chapter.project_id == chapter.project_id)
+    max_order = query.count()
     
     db_chapter = Chapter(
         title=chapter.title,

@@ -1,0 +1,381 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		33D8BC89C7E30FE37A0244B0 /* ChapterListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 711934E7FD7BC1D11DA504B7 /* ChapterListView.swift */; };
+		7237437125BC5D5EA87286CD /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = 489ABA4E76FB6C787D62E1C9 /* Project.swift */; };
+		7B6AC05FC75FBE1499965348 /* ZenWriterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F84B029EB8CFFF0CECE68C /* ZenWriterApp.swift */; };
+		87ED6D65A7E408223FAACBAE /* RichTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D50DF87A72D93C37B354D1 /* RichTextEditor.swift */; };
+		9F1E726D808E7EC42205916E /* ReferenceDoc.swift in Sources */ = {isa = PBXBuildFile; fileRef = A222754139F3EFF2E8CB3964 /* ReferenceDoc.swift */; };
+		A799B544C5259CFEBDC20216 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4ADA6DB7DC291FCA0B868D6C /* Assets.xcassets */; };
+		B2744EA1C3D54A8B372D2A8F /* ImportExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 186A1BB9733E08447152DF65 /* ImportExportService.swift */; };
+		BB4BA69E7C0BEFECC4E4CD70 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E2E0619340BBF3A7D3E762 /* ContentView.swift */; };
+		C529CA2DD1F9E224D283DE55 /* Chapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED5C7F7565EC22E8FA7C767 /* Chapter.swift */; };
+		CD86795A90FFCB18C9B358B6 /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B9A2B92171C421B785DC2CB /* EditorView.swift */; };
+		F3977163E1F96A8CAF5A5758 /* ProjectListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99BEA38A8ED3C7E3498A0B0A /* ProjectListView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		17B5D5C6F2323806246D32EC /* ZenWriter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ZenWriter.entitlements; sourceTree = "<group>"; };
+		186A1BB9733E08447152DF65 /* ImportExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportExportService.swift; sourceTree = "<group>"; };
+		1B9A2B92171C421B785DC2CB /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
+		489ABA4E76FB6C787D62E1C9 /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
+		4ADA6DB7DC291FCA0B868D6C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		711934E7FD7BC1D11DA504B7 /* ChapterListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChapterListView.swift; sourceTree = "<group>"; };
+		83D50DF87A72D93C37B354D1 /* RichTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RichTextEditor.swift; sourceTree = "<group>"; };
+		8ED5C7F7565EC22E8FA7C767 /* Chapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chapter.swift; sourceTree = "<group>"; };
+		93E2E0619340BBF3A7D3E762 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		99BEA38A8ED3C7E3498A0B0A /* ProjectListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectListView.swift; sourceTree = "<group>"; };
+		9CDCB4462022BC530C4536D0 /* ZenWriter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZenWriter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A222754139F3EFF2E8CB3964 /* ReferenceDoc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferenceDoc.swift; sourceTree = "<group>"; };
+		D3F84B029EB8CFFF0CECE68C /* ZenWriterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZenWriterApp.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		1F2C2D5C0D3C9DA72B3C034E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				93E2E0619340BBF3A7D3E762 /* ContentView.swift */,
+				EAF1743D48C12C8EF36E7C70 /* Editor */,
+				F001858A00B4BB892710C56A /* Sidebar */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		3F0E1DB85F7D1FC40E9E929B = {
+			isa = PBXGroup;
+			children = (
+				7154A80AFE8494C1ABFB284C /* ZenWriter */,
+				BA2D984E491CDA6A2D4C8C63 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5508CB0859DDC640EC4CA642 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				8ED5C7F7565EC22E8FA7C767 /* Chapter.swift */,
+				489ABA4E76FB6C787D62E1C9 /* Project.swift */,
+				A222754139F3EFF2E8CB3964 /* ReferenceDoc.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		7154A80AFE8494C1ABFB284C /* ZenWriter */ = {
+			isa = PBXGroup;
+			children = (
+				4ADA6DB7DC291FCA0B868D6C /* Assets.xcassets */,
+				17B5D5C6F2323806246D32EC /* ZenWriter.entitlements */,
+				D3F84B029EB8CFFF0CECE68C /* ZenWriterApp.swift */,
+				5508CB0859DDC640EC4CA642 /* Models */,
+				95727E1D15479F79AFFF15A6 /* Services */,
+				1F2C2D5C0D3C9DA72B3C034E /* Views */,
+			);
+			path = ZenWriter;
+			sourceTree = "<group>";
+		};
+		95727E1D15479F79AFFF15A6 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				186A1BB9733E08447152DF65 /* ImportExportService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		BA2D984E491CDA6A2D4C8C63 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9CDCB4462022BC530C4536D0 /* ZenWriter.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EAF1743D48C12C8EF36E7C70 /* Editor */ = {
+			isa = PBXGroup;
+			children = (
+				1B9A2B92171C421B785DC2CB /* EditorView.swift */,
+				83D50DF87A72D93C37B354D1 /* RichTextEditor.swift */,
+			);
+			path = Editor;
+			sourceTree = "<group>";
+		};
+		F001858A00B4BB892710C56A /* Sidebar */ = {
+			isa = PBXGroup;
+			children = (
+				711934E7FD7BC1D11DA504B7 /* ChapterListView.swift */,
+				99BEA38A8ED3C7E3498A0B0A /* ProjectListView.swift */,
+			);
+			path = Sidebar;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		34016D8CB07B0BEB7F66B777 /* ZenWriter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 72FE48B17F9A9AA452B8DE88 /* Build configuration list for PBXNativeTarget "ZenWriter" */;
+			buildPhases = (
+				3582751F9B54CF48B549D401 /* Sources */,
+				BFAACCDD5008B98861882625 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ZenWriter;
+			packageProductDependencies = (
+			);
+			productName = ZenWriter;
+			productReference = 9CDCB4462022BC530C4536D0 /* ZenWriter.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		28DCD06FA4FEB69B3A410B1D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+			};
+			buildConfigurationList = 5004ACAD1D0BAC6449E8820E /* Build configuration list for PBXProject "ZenWriter" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 3F0E1DB85F7D1FC40E9E929B;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				34016D8CB07B0BEB7F66B777 /* ZenWriter */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BFAACCDD5008B98861882625 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A799B544C5259CFEBDC20216 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3582751F9B54CF48B549D401 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C529CA2DD1F9E224D283DE55 /* Chapter.swift in Sources */,
+				33D8BC89C7E30FE37A0244B0 /* ChapterListView.swift in Sources */,
+				BB4BA69E7C0BEFECC4E4CD70 /* ContentView.swift in Sources */,
+				CD86795A90FFCB18C9B358B6 /* EditorView.swift in Sources */,
+				B2744EA1C3D54A8B372D2A8F /* ImportExportService.swift in Sources */,
+				7237437125BC5D5EA87286CD /* Project.swift in Sources */,
+				F3977163E1F96A8CAF5A5758 /* ProjectListView.swift in Sources */,
+				9F1E726D808E7EC42205916E /* ReferenceDoc.swift in Sources */,
+				87ED6D65A7E408223FAACBAE /* RichTextEditor.swift in Sources */,
+				7B6AC05FC75FBE1499965348 /* ZenWriterApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0FB0EB058EFA6843F6DF1406 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ZenWriter/ZenWriter.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = ZenWriter;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zenwriter.desktop;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		15327F9627AAE1E170924147 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		E1FC511DF35FBB07CF21FE9A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ZenWriter/ZenWriter.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = ZenWriter;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zenwriter.desktop;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		EAF781D860B4A1DA0179624B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5004ACAD1D0BAC6449E8820E /* Build configuration list for PBXProject "ZenWriter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EAF781D860B4A1DA0179624B /* Debug */,
+				15327F9627AAE1E170924147 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		72FE48B17F9A9AA452B8DE88 /* Build configuration list for PBXNativeTarget "ZenWriter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0FB0EB058EFA6843F6DF1406 /* Debug */,
+				E1FC511DF35FBB07CF21FE9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 28DCD06FA4FEB69B3A410B1D /* Project object */;
+}

@@ -9,7 +9,6 @@
   --nebula-text: #E0E1E6;
   --nebula-accent: #8B5CF6;
 
-  --font-serif: 'Times New Roman', serif;
   --font-sans: 'Inter', sans-serif;
 }
 
@@ -17,7 +16,7 @@
 body {
   background-color: var(--paper-bg);
   color: var(--paper-text);
-  font-family: var(--font-serif);
+  font-family: var(--font-serif), Georgia, serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;

@@ -11,12 +11,14 @@ import {
 } from '@/lib/chapters';
 
 interface ChapterDrawerProps {
+    projectId: number | null;
     activeChapterId: number | null;
     onSelectChapter: (chapterId: number) => void;
     onChaptersChange: () => void;
 }
 
 export default function ChapterDrawer({
+    projectId,
     activeChapterId,
     onSelectChapter,
     onChaptersChange
@@ -25,10 +27,14 @@ export default function ChapterDrawer({
     const [chapters, setChapters] = useState<ChapterCardType[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    // Load chapters
+    // Load chapters for current project
     const loadChapters = async () => {
+        if (!projectId) {
+            setChapters([]);
+            return;
+        }
         try {
-            const data = await listChapters();
+            const data = await listChapters(projectId);
             setChapters(data);
         } catch (error) {
             console.error('Erro ao carregar capítulos:', error);
@@ -37,7 +43,7 @@ export default function ChapterDrawer({
 
     useEffect(() => {
         loadChapters();
-    }, []);
+    }, [projectId]);
 
     // Reload when chapters change externally
     useEffect(() => {
@@ -45,10 +51,13 @@ export default function ChapterDrawer({
     }, [onChaptersChange]);
 
     const handleCreateChapter = async () => {
+        if (!projectId) return;
+
         setIsLoading(true);
         try {
             const newChapter = await createChapter({
                 title: `Capítulo ${chapters.length + 1}`,
+                project_id: projectId,
             });
             await loadChapters();
             onSelectChapter(newChapter.id);
