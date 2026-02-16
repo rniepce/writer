@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		33D8BC89C7E30FE37A0244B0 /* ChapterListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 711934E7FD7BC1D11DA504B7 /* ChapterListView.swift */; };
+		69179564845B7310BAF24008 /* ZenTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CD1C777568F3192F2728DB /* ZenTheme.swift */; };
 		7237437125BC5D5EA87286CD /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = 489ABA4E76FB6C787D62E1C9 /* Project.swift */; };
 		7B6AC05FC75FBE1499965348 /* ZenWriterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F84B029EB8CFFF0CECE68C /* ZenWriterApp.swift */; };
 		87ED6D65A7E408223FAACBAE /* RichTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D50DF87A72D93C37B354D1 /* RichTextEditor.swift */; };
@@ -24,6 +25,7 @@
 		17B5D5C6F2323806246D32EC /* ZenWriter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ZenWriter.entitlements; sourceTree = "<group>"; };
 		186A1BB9733E08447152DF65 /* ImportExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportExportService.swift; sourceTree = "<group>"; };
 		1B9A2B92171C421B785DC2CB /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
+		32CD1C777568F3192F2728DB /* ZenTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZenTheme.swift; sourceTree = "<group>"; };
 		489ABA4E76FB6C787D62E1C9 /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
 		4ADA6DB7DC291FCA0B868D6C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		711934E7FD7BC1D11DA504B7 /* ChapterListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChapterListView.swift; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 			isa = PBXGroup;
 			children = (
 				4ADA6DB7DC291FCA0B868D6C /* Assets.xcassets */,
+				32CD1C777568F3192F2728DB /* ZenTheme.swift */,
 				17B5D5C6F2323806246D32EC /* ZenWriter.entitlements */,
 				D3F84B029EB8CFFF0CECE68C /* ZenWriterApp.swift */,
 				5508CB0859DDC640EC4CA642 /* Models */,
@@ -186,6 +189,7 @@
 				F3977163E1F96A8CAF5A5758 /* ProjectListView.swift in Sources */,
 				9F1E726D808E7EC42205916E /* ReferenceDoc.swift in Sources */,
 				87ED6D65A7E408223FAACBAE /* RichTextEditor.swift in Sources */,
+				69179564845B7310BAF24008 /* ZenTheme.swift in Sources */,
 				7B6AC05FC75FBE1499965348 /* ZenWriterApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

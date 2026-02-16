@@ -16,26 +16,30 @@ struct ChapterListView: View {
         VStack(spacing: 0) {
             // Header
             HStack {
-                Label("Capítulos", systemImage: "list.bullet")
-                    .font(.headline)
-                    .foregroundStyle(.primary)
+                Text("Capítulos")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(ZenTheme.inkLight)
+                    .textCase(.uppercase)
+                    .tracking(1)
                 Spacer()
                 Text("\(chapters.count)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal, 8)
+                    .font(.system(size: 10, weight: .medium, design: .monospaced))
+                    .foregroundStyle(ZenTheme.inkLight.opacity(0.5))
+                    .padding(.horizontal, 6)
                     .padding(.vertical, 2)
-                    .background(.quaternary, in: Capsule())
+                    .background(ZenTheme.divider.opacity(0.5), in: Capsule())
                 Button(action: createChapter) {
                     Image(systemName: "plus")
-                        .font(.body.weight(.medium))
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(ZenTheme.inkLight)
                 }
                 .buttonStyle(.borderless)
                 .help("Novo capítulo")
                 .disabled(isCreating)
             }
             .padding(.horizontal, 16)
-            .padding(.vertical, 12)
+            .padding(.top, 12)
+            .padding(.bottom, 8)
 
             // Chapter list
             List(selection: Binding(
@@ -49,6 +53,11 @@ struct ChapterListView: View {
                 ForEach(chapters) { chapter in
                     ChapterRow(chapter: chapter, isSelected: chapter === selectedChapter)
                         .tag(chapter.persistentModelID)
+                        .listRowBackground(
+                            chapter === selectedChapter
+                                ? ZenTheme.amberLight.clipShape(RoundedRectangle(cornerRadius: 6))
+                                : Color.clear.clipShape(RoundedRectangle(cornerRadius: 6))
+                        )
                         .contextMenu {
                             Button("Excluir", role: .destructive) {
                                 deleteChapter(chapter)
@@ -59,6 +68,7 @@ struct ChapterListView: View {
                 .onMove(perform: moveChapters)
             }
             .listStyle(.sidebar)
+            .scrollContentBackground(.hidden)
         }
     }
 
@@ -82,7 +92,6 @@ struct ChapterListView: View {
         let wasSelected = (chapter === selectedChapter)
         modelContext.delete(chapter)
         try? modelContext.save()
-
         if wasSelected {
             selectedChapter = chapters.first(where: { $0 !== chapter })
         }
@@ -90,9 +99,7 @@ struct ChapterListView: View {
 
     private func deleteChapters(at offsets: IndexSet) {
         let sorted = chapters
-        for i in offsets {
-            deleteChapter(sorted[i])
-        }
+        for i in offsets { deleteChapter(sorted[i]) }
     }
 
     private func moveChapters(from source: IndexSet, to destination: Int) {
@@ -113,21 +120,26 @@ struct ChapterRow: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            RoundedRectangle(cornerRadius: 3)
-                .fill(chapterColor)
-                .frame(width: 4, height: 32)
+            // Subtle accent bar
+            RoundedRectangle(cornerRadius: 2)
+                .fill(isSelected ? ZenTheme.amber : ZenTheme.divider)
+                .frame(width: 3, height: 28)
+
             VStack(alignment: .leading, spacing: 2) {
                 Text(chapter.title)
-                    .font(.body)
+                    .font(.system(.body, design: .serif))
+                    .foregroundStyle(ZenTheme.ink)
                     .lineLimit(1)
-                HStack(spacing: 8) {
-                    Text("\(chapter.wordCount) palavras")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+
+                HStack(spacing: 6) {
+                    Text("\(chapter.wordCount)")
+                        .font(.system(size: 10, design: .monospaced))
+                        .foregroundStyle(ZenTheme.inkLight.opacity(0.5))
+
                     if let preview = chapter.preview {
-                        Text(preview)
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
+                        Text("· \(preview)")
+                            .font(.system(size: 10))
+                            .foregroundStyle(ZenTheme.inkLight.opacity(0.4))
                             .lineLimit(1)
                     }
                 }
@@ -135,22 +147,15 @@ struct ChapterRow: View {
         }
         .padding(.vertical, 2)
     }
-
-    private var chapterColor: Color {
-        if let hex = chapter.color {
-            return Color(hex: hex)
-        }
-        return isSelected ? Color.accentColor : .secondary.opacity(0.3)
-    }
 }
 
-// MARK: — Chapter Preview Extension
+// MARK: — Chapter Preview
 
 extension Chapter {
     var preview: String? {
         let clean = content.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !clean.isEmpty else { return nil }
-        let maxChars = 60
+        let maxChars = 40
         if clean.count <= maxChars { return clean }
         return String(clean.prefix(maxChars)) + "…"
     }

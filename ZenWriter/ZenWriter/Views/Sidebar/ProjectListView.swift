@@ -10,43 +10,64 @@ struct ProjectListView: View {
     @State private var isAddingProject = false
     @State private var newProjectTitle = ""
     @State private var isImporting = false
+    @FocusState private var newProjectFocused: Bool
 
     var body: some View {
         VStack(spacing: 0) {
             // Header
             HStack {
-                Label("Projetos", systemImage: "book.closed.fill")
-                    .font(.headline)
-                    .foregroundStyle(.primary)
+                Text("Projetos")
+                    .font(.system(size: 11, weight: .semibold, design: .default))
+                    .foregroundStyle(ZenTheme.inkLight)
+                    .textCase(.uppercase)
+                    .tracking(1)
                 Spacer()
-                Button(action: { isAddingProject.toggle() }) {
+                Button(action: {
+                    withAnimation(.easeOut(duration: 0.2)) { isAddingProject.toggle() }
+                }) {
                     Image(systemName: "plus")
-                        .font(.body.weight(.medium))
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(ZenTheme.inkLight)
                 }
                 .buttonStyle(.borderless)
                 .help("Novo projeto")
             }
             .padding(.horizontal, 16)
-            .padding(.vertical, 12)
+            .padding(.top, 16)
+            .padding(.bottom, 8)
 
-            // New project form
+            // New project inline form
             if isAddingProject {
-                HStack(spacing: 8) {
-                    TextField("Nome do projeto…", text: $newProjectTitle)
-                        .textFieldStyle(.roundedBorder)
+                HStack(spacing: 6) {
+                    TextField("Título do projeto…", text: $newProjectTitle)
+                        .textFieldStyle(.plain)
+                        .font(.system(.body, design: .serif))
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 5)
+                        .background(Color.white.opacity(0.8), in: RoundedRectangle(cornerRadius: 6))
+                        .focused($newProjectFocused)
                         .onSubmit { createProject() }
-                    Button("Criar") { createProject() }
-                        .buttonStyle(.borderedProminent)
-                        .tint(.accentColor)
-                        .disabled(newProjectTitle.trimmingCharacters(in: .whitespaces).isEmpty)
-                    Button(action: { isAddingProject = false; newProjectTitle = "" }) {
-                        Image(systemName: "xmark")
-                            .font(.caption)
+                        .onExitCommand {
+                            isAddingProject = false
+                            newProjectTitle = ""
+                        }
+                    Button(action: createProject) {
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .padding(5)
+                            .background(ZenTheme.amber, in: Circle())
                     }
                     .buttonStyle(.borderless)
+                    .disabled(newProjectTitle.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 8)
+                .onAppear { newProjectFocused = true }
+                .transition(.asymmetric(
+                    insertion: .opacity.combined(with: .move(edge: .top)),
+                    removal: .opacity
+                ))
             }
 
             // Project list
@@ -62,22 +83,33 @@ struct ProjectListView: View {
                 ForEach(projects) { project in
                     ProjectRow(project: project, isSelected: project === selectedProject)
                         .tag(project.persistentModelID)
+                        .listRowBackground(
+                            project === selectedProject
+                                ? ZenTheme.amberLight.clipShape(RoundedRectangle(cornerRadius: 6))
+                                : Color.clear.clipShape(RoundedRectangle(cornerRadius: 6))
+                        )
                         .contextMenu {
-                            Button("Excluir", role: .destructive) {
-                                deleteProject(project)
-                            }
+                            Button("Exportar…") { ImportExportService.exportProject(project) }
+                            Divider()
+                            Button("Excluir", role: .destructive) { deleteProject(project) }
                         }
                 }
                 .onDelete(perform: deleteProjects)
             }
             .listStyle(.sidebar)
-            .frame(minHeight: 120, maxHeight: 250)
+            .scrollContentBackground(.hidden)
+            .frame(minHeight: 100, maxHeight: 220)
 
-            // Import button
+            // Import button — subtle
             Button(action: { isImporting = true }) {
-                Label("Importar Projeto", systemImage: "square.and.arrow.down")
-                    .font(.subheadline)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                HStack(spacing: 6) {
+                    Image(systemName: "square.and.arrow.down")
+                        .font(.system(size: 11))
+                    Text("Importar Projeto")
+                        .font(.system(size: 12))
+                }
+                .foregroundStyle(ZenTheme.inkLight.opacity(0.7))
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
             .buttonStyle(.borderless)
             .padding(.horizontal, 16)
@@ -101,7 +133,6 @@ struct ProjectListView: View {
         let project = Project(title: title)
         modelContext.insert(project)
 
-        // Create first chapter
         let chapter = Chapter(title: "Capítulo 1", order: 0, project: project)
         modelContext.insert(chapter)
 
@@ -110,7 +141,7 @@ struct ProjectListView: View {
         selectedProject = project
         selectedChapter = chapter
         newProjectTitle = ""
-        isAddingProject = false
+        withAnimation { isAddingProject = false }
     }
 
     private func deleteProject(_ project: Project) {
@@ -125,14 +156,11 @@ struct ProjectListView: View {
     }
 
     private func deleteProjects(at offsets: IndexSet) {
-        for i in offsets {
-            deleteProject(projects[i])
-        }
+        for i in offsets { deleteProject(projects[i]) }
     }
 
     private func handleImport(_ result: Result<[URL], Error>) {
         guard case .success(let urls) = result, let url = urls.first else { return }
-
         ImportExportService.importProject(from: url, into: modelContext) { imported in
             if let imported {
                 selectedProject = imported
@@ -150,18 +178,20 @@ struct ProjectRow: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            Image(systemName: "book.fill")
-                .font(.subheadline)
-                .foregroundStyle(isSelected ? Color.accentColor : .secondary)
-            VStack(alignment: .leading, spacing: 2) {
+            Image(systemName: isSelected ? "book.fill" : "book.closed")
+                .font(.system(size: 13))
+                .foregroundStyle(isSelected ? ZenTheme.amber : ZenTheme.inkLight.opacity(0.5))
+                .frame(width: 18)
+            VStack(alignment: .leading, spacing: 1) {
                 Text(project.title)
-                    .font(.body)
+                    .font(.system(.body, design: .serif))
+                    .foregroundStyle(ZenTheme.ink)
                     .lineLimit(1)
-                Text("\(project.chapters.count) capítulo\(project.chapters.count != 1 ? "s" : "") · \(project.totalWordCount) palavras")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                Text("\(project.chapters.count) cap. · \(project.totalWordCount) palavras")
+                    .font(.system(size: 10))
+                    .foregroundStyle(ZenTheme.inkLight.opacity(0.6))
             }
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, 3)
     }
 }
