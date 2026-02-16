@@ -7,6 +7,7 @@ struct EditorView: View {
     @State private var lastSaved: Date?
     @State private var saveTask: Task<Void, Never>?
     @State private var showSavedFeedback = false
+    @State private var editorCoordinator: RichTextEditor.Coordinator?
 
     var body: some View {
         ZStack {
@@ -14,11 +15,12 @@ struct EditorView: View {
             ZenTheme.parchment.ignoresSafeArea()
 
             VStack(spacing: 0) {
-                // Top bar — ultra minimal
+                // Top bar
                 EditorTopBar(
                     chapter: chapter,
                     isSaving: isSaving,
-                    showSavedFeedback: showSavedFeedback
+                    showSavedFeedback: showSavedFeedback,
+                    coordinator: editorCoordinator
                 )
 
                 // Editor
@@ -31,9 +33,14 @@ struct EditorView: View {
                         }
                     )
                 )
+                .onAppear { }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .overlay(alignment: .topLeading) {
+                    // Capture coordinator reference
+                    CoordinatorCapture(coordinator: $editorCoordinator)
+                }
 
-                // Bottom status — whisper-quiet
+                // Bottom status
                 HStack(spacing: 16) {
                     Text("\(chapter.wordCount) palavras")
                         .font(.system(size: 11, design: .monospaced))
@@ -70,7 +77,6 @@ struct EditorView: View {
             isSaving = false
             lastSaved = Date()
 
-            // Brief green dot feedback
             withAnimation(.easeIn(duration: 0.2)) { showSavedFeedback = true }
             try? await Task.sleep(for: .seconds(2))
             withAnimation(.easeOut(duration: 0.5)) { showSavedFeedback = false }
@@ -87,55 +93,128 @@ struct EditorView: View {
     }
 }
 
-// MARK: — Top Bar
+// MARK: — Coordinator Capture Helper
+
+/// Captures the RichTextEditor coordinator for toolbar use
+struct CoordinatorCapture: NSViewRepresentable {
+    @Binding var coordinator: RichTextEditor.Coordinator?
+
+    func makeNSView(context: Context) -> NSView {
+        let view = NSView()
+        view.frame = .zero
+        // Delay to let the RichTextEditor create its coordinator
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            // Walk up the responder chain to find the NSTextView
+            if let scrollView = view.superview?.superview?.subviews
+                .compactMap({ $0 as? NSScrollView }).first,
+               let textView = scrollView.documentView as? NSTextView {
+                // Find the coordinator via delegate
+                coordinator = textView.delegate as? RichTextEditor.Coordinator
+            }
+        }
+        return view
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {}
+}
+
+// MARK: — Top Bar with Formatting Toolbar
 
 struct EditorTopBar: View {
     @Bindable var chapter: Chapter
     let isSaving: Bool
     let showSavedFeedback: Bool
+    var coordinator: RichTextEditor.Coordinator?
 
     @State private var isEditingTitle = false
     @State private var editTitle = ""
     @FocusState private var titleFocused: Bool
 
     var body: some View {
-        HStack(spacing: 12) {
-            // Chapter title — elegant, editable on click
-            if isEditingTitle {
-                TextField("", text: $editTitle)
-                    .textFieldStyle(.plain)
-                    .font(.system(.title3, design: .serif, weight: .medium))
-                    .foregroundStyle(ZenTheme.ink)
-                    .focused($titleFocused)
-                    .onSubmit {
-                        chapter.title = editTitle.isEmpty ? chapter.title : editTitle
-                        isEditingTitle = false
-                    }
-                    .onExitCommand {
-                        isEditingTitle = false
-                    }
-                    .onAppear { titleFocused = true }
-            } else {
-                Text(chapter.title)
-                    .font(.system(.title3, design: .serif, weight: .medium))
-                    .foregroundStyle(ZenTheme.ink)
-                    .onTapGesture {
-                        editTitle = chapter.title
-                        isEditingTitle = true
-                    }
-            }
+        VStack(spacing: 0) {
+            HStack(spacing: 12) {
+                // Chapter title
+                if isEditingTitle {
+                    TextField("", text: $editTitle)
+                        .textFieldStyle(.plain)
+                        .font(.system(.title3, design: .serif, weight: .medium))
+                        .foregroundStyle(ZenTheme.ink)
+                        .focused($titleFocused)
+                        .onSubmit {
+                            chapter.title = editTitle.isEmpty ? chapter.title : editTitle
+                            isEditingTitle = false
+                        }
+                        .onExitCommand { isEditingTitle = false }
+                        .onAppear { titleFocused = true }
+                } else {
+                    Text(chapter.title)
+                        .font(.system(.title3, design: .serif, weight: .medium))
+                        .foregroundStyle(ZenTheme.ink)
+                        .onTapGesture {
+                            editTitle = chapter.title
+                            isEditingTitle = true
+                        }
+                }
 
-            Spacer()
+                Spacer()
 
-            // Minimal save indicator
-            if isSaving {
-                ProgressView()
-                    .controlSize(.small)
-                    .scaleEffect(0.7)
-                    .opacity(0.5)
+                // Save indicator
+                if isSaving {
+                    ProgressView()
+                        .controlSize(.small)
+                        .scaleEffect(0.7)
+                        .opacity(0.5)
+                }
             }
+            .padding(.horizontal, 24)
+            .padding(.top, 10)
+            .padding(.bottom, 4)
+
+            // Formatting toolbar
+            HStack(spacing: 2) {
+                FormatButton(icon: "bold", label: "Negrito (⌘B)", action: { coordinator?.toggleBold() })
+                FormatButton(icon: "italic", label: "Itálico (⌘I)", action: { coordinator?.toggleItalic() })
+                FormatButton(icon: "textformat.size.larger", label: "Título", action: { coordinator?.applyHeading() })
+
+                Divider()
+                    .frame(height: 16)
+                    .padding(.horizontal, 4)
+
+                // Keyboard shortcuts info
+                Text("⌘B  ⌘I")
+                    .font(.system(size: 10, design: .monospaced))
+                    .foregroundStyle(ZenTheme.inkLight.opacity(0.3))
+
+                Spacer()
+            }
+            .padding(.horizontal, 24)
+            .padding(.bottom, 6)
         }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 10)
+    }
+}
+
+// MARK: — Format Button
+
+struct FormatButton: View {
+    let icon: String
+    let label: String
+    let action: () -> Void
+
+    @State private var isHovering = false
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: icon)
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(isHovering ? ZenTheme.amber : ZenTheme.inkLight.opacity(0.6))
+                .frame(width: 28, height: 24)
+                .background(
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(isHovering ? ZenTheme.amber.opacity(0.1) : Color.clear)
+                )
+        }
+        .buttonStyle(.borderless)
+        .help(label)
+        .onHover { isHovering = $0 }
     }
 }

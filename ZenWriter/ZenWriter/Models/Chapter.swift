@@ -31,7 +31,15 @@ final class Chapter {
     }
 
     static func countWords(_ text: String) -> Int {
-        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        // Extract plain text from RTF if needed
+        let plainText: String
+        if text.hasPrefix("{\\rtf"), let data = text.data(using: .utf8),
+           let attrStr = NSAttributedString(rtf: data, documentAttributes: nil) {
+            plainText = attrStr.string
+        } else {
+            plainText = text
+        }
+        let trimmed = plainText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return 0 }
         return trimmed.components(separatedBy: .whitespacesAndNewlines)
             .filter { !$0.isEmpty }
