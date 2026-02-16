@@ -17,17 +17,17 @@ struct ProjectListView: View {
             // Header
             HStack {
                 Text("Projetos")
-                    .font(.system(size: 11, weight: .semibold, design: .default))
-                    .foregroundStyle(ZenTheme.inkLight)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(.secondary)
                     .textCase(.uppercase)
-                    .tracking(1)
+                    .tracking(0.8)
                 Spacer()
                 Button(action: {
                     withAnimation(.easeOut(duration: 0.2)) { isAddingProject.toggle() }
                 }) {
                     Image(systemName: "plus")
                         .font(.system(size: 12, weight: .medium))
-                        .foregroundStyle(ZenTheme.inkLight)
+                        .foregroundStyle(.secondary)
                 }
                 .buttonStyle(.borderless)
                 .help("Novo projeto")
@@ -40,11 +40,8 @@ struct ProjectListView: View {
             if isAddingProject {
                 HStack(spacing: 6) {
                     TextField("Título do projeto…", text: $newProjectTitle)
-                        .textFieldStyle(.plain)
-                        .font(.system(.body, design: .serif))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 5)
-                        .background(Color.white.opacity(0.8), in: RoundedRectangle(cornerRadius: 6))
+                        .textFieldStyle(.roundedBorder)
+                        .font(.system(.body))
                         .focused($newProjectFocused)
                         .onSubmit { createProject() }
                         .onExitCommand {
@@ -83,11 +80,6 @@ struct ProjectListView: View {
                 ForEach(projects) { project in
                     ProjectRow(project: project, isSelected: project === selectedProject)
                         .tag(project.persistentModelID)
-                        .listRowBackground(
-                            project === selectedProject
-                                ? ZenTheme.amberLight.clipShape(RoundedRectangle(cornerRadius: 6))
-                                : Color.clear.clipShape(RoundedRectangle(cornerRadius: 6))
-                        )
                         .contextMenu {
                             Button("Exportar…") { ImportExportService.exportProject(project) }
                             Divider()
@@ -97,7 +89,6 @@ struct ProjectListView: View {
                 .onDelete(perform: deleteProjects)
             }
             .listStyle(.sidebar)
-            .scrollContentBackground(.hidden)
             .frame(minHeight: 100, maxHeight: 220)
 
             // Import button — subtle
@@ -108,7 +99,7 @@ struct ProjectListView: View {
                     Text("Importar Projeto")
                         .font(.system(size: 12))
                 }
-                .foregroundStyle(ZenTheme.inkLight.opacity(0.7))
+                .foregroundStyle(.tertiary)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .buttonStyle(.borderless)
@@ -180,16 +171,16 @@ struct ProjectRow: View {
         HStack(spacing: 10) {
             Image(systemName: isSelected ? "book.fill" : "book.closed")
                 .font(.system(size: 13))
-                .foregroundStyle(isSelected ? ZenTheme.amber : ZenTheme.inkLight.opacity(0.5))
+                .foregroundStyle(isSelected ? ZenTheme.amber : .secondary)
                 .frame(width: 18)
             VStack(alignment: .leading, spacing: 1) {
                 Text(project.title)
-                    .font(.system(.body, design: .serif))
-                    .foregroundStyle(ZenTheme.ink)
+                    .font(.system(.body))
+                    .foregroundStyle(.primary)
                     .lineLimit(1)
                 Text("\(project.chapters.count) cap. · \(project.totalWordCount) palavras")
                     .font(.system(size: 10))
-                    .foregroundStyle(ZenTheme.inkLight.opacity(0.6))
+                    .foregroundStyle(.tertiary)
             }
         }
         .padding(.vertical, 3)

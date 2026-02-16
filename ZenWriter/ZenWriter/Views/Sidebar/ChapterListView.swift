@@ -17,21 +17,21 @@ struct ChapterListView: View {
             // Header
             HStack {
                 Text("Capítulos")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(ZenTheme.inkLight)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(.secondary)
                     .textCase(.uppercase)
-                    .tracking(1)
+                    .tracking(0.8)
                 Spacer()
                 Text("\(chapters.count)")
                     .font(.system(size: 10, weight: .medium, design: .monospaced))
-                    .foregroundStyle(ZenTheme.inkLight.opacity(0.5))
+                    .foregroundStyle(.tertiary)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
-                    .background(ZenTheme.divider.opacity(0.5), in: Capsule())
+                    .background(.quaternary, in: Capsule())
                 Button(action: createChapter) {
                     Image(systemName: "plus")
                         .font(.system(size: 12, weight: .medium))
-                        .foregroundStyle(ZenTheme.inkLight)
+                        .foregroundStyle(.secondary)
                 }
                 .buttonStyle(.borderless)
                 .help("Novo capítulo")
@@ -53,11 +53,6 @@ struct ChapterListView: View {
                 ForEach(chapters) { chapter in
                     ChapterRow(chapter: chapter, isSelected: chapter === selectedChapter)
                         .tag(chapter.persistentModelID)
-                        .listRowBackground(
-                            chapter === selectedChapter
-                                ? ZenTheme.amberLight.clipShape(RoundedRectangle(cornerRadius: 6))
-                                : Color.clear.clipShape(RoundedRectangle(cornerRadius: 6))
-                        )
                         .contextMenu {
                             Button("Excluir", role: .destructive) {
                                 deleteChapter(chapter)
@@ -68,7 +63,6 @@ struct ChapterListView: View {
                 .onMove(perform: moveChapters)
             }
             .listStyle(.sidebar)
-            .scrollContentBackground(.hidden)
         }
     }
 
@@ -122,24 +116,24 @@ struct ChapterRow: View {
         HStack(spacing: 10) {
             // Subtle accent bar
             RoundedRectangle(cornerRadius: 2)
-                .fill(isSelected ? ZenTheme.amber : ZenTheme.divider)
+                .fill(isSelected ? ZenTheme.amber : Color.secondary.opacity(0.2))
                 .frame(width: 3, height: 28)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(chapter.title)
-                    .font(.system(.body, design: .serif))
-                    .foregroundStyle(ZenTheme.ink)
+                    .font(.system(.body))
+                    .foregroundStyle(.primary)
                     .lineLimit(1)
 
                 HStack(spacing: 6) {
-                    Text("\(chapter.wordCount)")
-                        .font(.system(size: 10, design: .monospaced))
-                        .foregroundStyle(ZenTheme.inkLight.opacity(0.5))
+                    Text("\(chapter.wordCount) palavras")
+                        .font(.system(size: 10))
+                        .foregroundStyle(.tertiary)
 
                     if let preview = chapter.preview {
                         Text("· \(preview)")
                             .font(.system(size: 10))
-                            .foregroundStyle(ZenTheme.inkLight.opacity(0.4))
+                            .foregroundStyle(.quaternary)
                             .lineLimit(1)
                     }
                 }

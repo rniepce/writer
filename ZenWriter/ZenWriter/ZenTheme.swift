@@ -8,20 +8,18 @@ enum ZenTheme {
 
     /// Warm parchment background for the editor
     static let parchment = Color(red: 0.98, green: 0.96, blue: 0.93)
-    /// Slightly darker parchment for sidebar
-    static let sidebarBg = Color(red: 0.96, green: 0.94, blue: 0.90)
+    /// Sidebar uses system sidebar background for proper macOS integration
+    static let sidebarBg = Color(nsColor: .controlBackgroundColor)
     /// Warm ink color — not pure black
     static let ink = Color(red: 0.18, green: 0.16, blue: 0.14)
     /// Muted secondary text
     static let inkLight = Color(red: 0.45, green: 0.42, blue: 0.38)
     /// Subtle border/divider
-    static let divider = Color(red: 0.88, green: 0.85, blue: 0.80)
+    static let divider = Color(nsColor: .separatorColor)
     /// Accent — warm amber
     static let amber = Color(red: 0.76, green: 0.55, blue: 0.20)
     /// Light amber for selection backgrounds
     static let amberLight = Color(red: 0.76, green: 0.55, blue: 0.20).opacity(0.12)
-    /// Subtle hover state
-    static let hover = Color(red: 0.93, green: 0.90, blue: 0.86)
     /// Success green for save indicator
     static let saved = Color(red: 0.40, green: 0.62, blue: 0.45)
 
@@ -49,4 +47,19 @@ enum ZenTheme {
     static let sidebarMinWidth: CGFloat = 240
     static let sidebarIdealWidth: CGFloat = 280
     static let sidebarMaxWidth: CGFloat = 340
+}
+
+// MARK: — Feather Icon
+
+/// Custom feather/quill icon drawn with SwiftUI paths
+struct FeatherIcon: View {
+    var size: CGFloat = 48
+    var color: Color = ZenTheme.amber
+
+    var body: some View {
+        Image(systemName: "leaf")
+            .font(.system(size: size, weight: .ultraLight))
+            .foregroundStyle(color)
+            .rotationEffect(.degrees(-45))
+    }
 }

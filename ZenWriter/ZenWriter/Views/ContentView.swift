@@ -38,7 +38,7 @@ struct ContentView: View {
             ToolbarItem(placement: .navigation) {
                 Button(action: { withAnimation(.easeInOut(duration: 0.25)) { sidebarVisible.toggle() } }) {
                     Image(systemName: "sidebar.left")
-                        .foregroundStyle(ZenTheme.inkLight)
+                        .foregroundStyle(.secondary)
                 }
                 .help(sidebarVisible ? "Esconder sidebar" : "Mostrar sidebar")
             }
@@ -55,9 +55,7 @@ struct ContentView: View {
 
     private var emptyChapterState: some View {
         VStack(spacing: 16) {
-            Image(systemName: "text.cursor")
-                .font(.system(size: 40, weight: .ultraLight))
-                .foregroundStyle(ZenTheme.divider)
+            FeatherIcon(size: 40, color: ZenTheme.amber.opacity(0.4))
             Text("Selecione ou crie um capítulo")
                 .font(.system(.title3, design: .serif))
                 .foregroundStyle(ZenTheme.inkLight)
@@ -69,9 +67,7 @@ struct ContentView: View {
     private var welcomeState: some View {
         VStack(spacing: 24) {
             // Feather icon
-            Image(systemName: "pencil.line")
-                .font(.system(size: 48, weight: .ultraLight))
-                .foregroundStyle(ZenTheme.amber.opacity(0.5))
+            FeatherIcon(size: 56, color: ZenTheme.amber.opacity(0.5))
 
             VStack(spacing: 8) {
                 Text("ZenWriter")
@@ -111,10 +107,7 @@ struct SidebarView: View {
             )
 
             if let project = selectedProject {
-                Rectangle()
-                    .fill(ZenTheme.divider)
-                    .frame(height: 1)
-                    .padding(.horizontal, 16)
+                Divider()
 
                 ChapterListView(
                     project: project,
@@ -122,6 +115,5 @@ struct SidebarView: View {
                 )
             }
         }
-        .background(ZenTheme.sidebarBg)
     }
 }
