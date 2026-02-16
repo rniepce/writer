@@ -34,15 +34,7 @@ struct ContentView: View {
                 welcomeState
             }
         }
-        .toolbar {
-            ToolbarItem(placement: .navigation) {
-                Button(action: { withAnimation(.easeInOut(duration: 0.25)) { sidebarVisible.toggle() } }) {
-                    Image(systemName: "sidebar.left")
-                        .foregroundStyle(.secondary)
-                }
-                .help(sidebarVisible ? "Esconder sidebar" : "Mostrar sidebar")
-            }
-        }
+
         .onAppear {
             if selectedProject == nil, let first = projects.first {
                 selectedProject = first
