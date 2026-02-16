@@ -8,7 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		33D8BC89C7E30FE37A0244B0 /* ChapterListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 711934E7FD7BC1D11DA504B7 /* ChapterListView.swift */; };
+		482F2C54EBFA06EE5927CEC5 /* ReferenceDocsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8502427844FDDD5489F749 /* ReferenceDocsView.swift */; };
 		69179564845B7310BAF24008 /* ZenTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CD1C777568F3192F2728DB /* ZenTheme.swift */; };
+		6B2D105DF78AA931AA5DB368 /* DocumentReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B190D9B36DB27B711218A02 /* DocumentReader.swift */; };
 		7237437125BC5D5EA87286CD /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = 489ABA4E76FB6C787D62E1C9 /* Project.swift */; };
 		7B6AC05FC75FBE1499965348 /* ZenWriterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F84B029EB8CFFF0CECE68C /* ZenWriterApp.swift */; };
 		87ED6D65A7E408223FAACBAE /* RichTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D50DF87A72D93C37B354D1 /* RichTextEditor.swift */; };
@@ -22,12 +24,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0A8502427844FDDD5489F749 /* ReferenceDocsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferenceDocsView.swift; sourceTree = "<group>"; };
 		17B5D5C6F2323806246D32EC /* ZenWriter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ZenWriter.entitlements; sourceTree = "<group>"; };
 		186A1BB9733E08447152DF65 /* ImportExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportExportService.swift; sourceTree = "<group>"; };
 		1B9A2B92171C421B785DC2CB /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
 		32CD1C777568F3192F2728DB /* ZenTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZenTheme.swift; sourceTree = "<group>"; };
 		489ABA4E76FB6C787D62E1C9 /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
 		4ADA6DB7DC291FCA0B868D6C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		4B190D9B36DB27B711218A02 /* DocumentReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentReader.swift; sourceTree = "<group>"; };
 		711934E7FD7BC1D11DA504B7 /* ChapterListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChapterListView.swift; sourceTree = "<group>"; };
 		83D50DF87A72D93C37B354D1 /* RichTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RichTextEditor.swift; sourceTree = "<group>"; };
 		8ED5C7F7565EC22E8FA7C767 /* Chapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chapter.swift; sourceTree = "<group>"; };
@@ -44,6 +48,7 @@
 			children = (
 				93E2E0619340BBF3A7D3E762 /* ContentView.swift */,
 				EAF1743D48C12C8EF36E7C70 /* Editor */,
+				6EEB01E0FA2359D29BE48238 /* References */,
 				F001858A00B4BB892710C56A /* Sidebar */,
 			);
 			path = Views;
@@ -67,6 +72,14 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		6EEB01E0FA2359D29BE48238 /* References */ = {
+			isa = PBXGroup;
+			children = (
+				0A8502427844FDDD5489F749 /* ReferenceDocsView.swift */,
+			);
+			path = References;
+			sourceTree = "<group>";
+		};
 		7154A80AFE8494C1ABFB284C /* ZenWriter */ = {
 			isa = PBXGroup;
 			children = (
@@ -84,6 +97,7 @@
 		95727E1D15479F79AFFF15A6 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				4B190D9B36DB27B711218A02 /* DocumentReader.swift */,
 				186A1BB9733E08447152DF65 /* ImportExportService.swift */,
 			);
 			path = Services;
@@ -183,11 +197,13 @@
 				C529CA2DD1F9E224D283DE55 /* Chapter.swift in Sources */,
 				33D8BC89C7E30FE37A0244B0 /* ChapterListView.swift in Sources */,
 				BB4BA69E7C0BEFECC4E4CD70 /* ContentView.swift in Sources */,
+				6B2D105DF78AA931AA5DB368 /* DocumentReader.swift in Sources */,
 				CD86795A90FFCB18C9B358B6 /* EditorView.swift in Sources */,
 				B2744EA1C3D54A8B372D2A8F /* ImportExportService.swift in Sources */,
 				7237437125BC5D5EA87286CD /* Project.swift in Sources */,
 				F3977163E1F96A8CAF5A5758 /* ProjectListView.swift in Sources */,
 				9F1E726D808E7EC42205916E /* ReferenceDoc.swift in Sources */,
+				482F2C54EBFA06EE5927CEC5 /* ReferenceDocsView.swift in Sources */,
 				87ED6D65A7E408223FAACBAE /* RichTextEditor.swift in Sources */,
 				69179564845B7310BAF24008 /* ZenTheme.swift in Sources */,
 				7B6AC05FC75FBE1499965348 /* ZenWriterApp.swift in Sources */,

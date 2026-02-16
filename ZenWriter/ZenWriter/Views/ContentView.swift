@@ -105,6 +105,10 @@ struct SidebarView: View {
                     project: project,
                     selectedChapter: $selectedChapter
                 )
+
+                Divider()
+
+                ReferenceDocsView(project: project)
             }
         }
     }
